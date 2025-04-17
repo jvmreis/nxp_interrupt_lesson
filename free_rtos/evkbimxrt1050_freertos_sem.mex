@@ -579,7 +579,7 @@
                                  <setting name="IRQn" value="GPIO5_Combined_0_15_IRQn"/>
                                  <setting name="enable_interrrupt" value="enabled"/>
                                  <setting name="enable_priority" value="true"/>
-                                 <setting name="priority" value="0"/>
+                                 <setting name="priority" value="2"/>
                                  <setting name="enable_custom_name" value="false"/>
                               </struct>
                            </struct>

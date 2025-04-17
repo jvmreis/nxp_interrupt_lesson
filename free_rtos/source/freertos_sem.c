@@ -19,6 +19,7 @@
 #include "board.h"
 #include "app.h"
 
+#include "peripherals.h"
 
 /*******************************************************************************
  * Definitions
@@ -39,13 +40,18 @@ uint32_t intial_millis=0;
 
 void BOARD_INITPINS_USER_BUTTON_callback(void *param)
 {
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+
+    /* Producer is ready to provide item. */
+    xSemaphoreGiveFromISR(xSemaphore_consumer,&xHigherPriorityTaskWoken);
+    portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+	DWT->CYCCNT = 0;
+	intial_millis = SysTick->VAL;
+
     /* clear the interrupt status */
     GPIO_PortClearInterruptFlags(BOARD_USER_BUTTON_GPIO, 1U << BOARD_USER_BUTTON_GPIO_PIN);
-    /* Change state of switch. */
 
-     //intial_millis = SysTick->VAL;
-
-    g_InputSignal = true;
     SDK_ISR_EXIT_BARRIER;
 }
 
@@ -61,6 +67,18 @@ int main(void)
     BOARD_InitHardware();
     BOARD_InitBootPeripherals();
     PRINTF("Hello World\r\n");
+
+    CoreDebug->DEMCR |= 0x01000000;
+    DWT->CTRL |= 0x00000001;
+
+
+    xSemaphore_consumer = xSemaphoreCreateBinary();
+    if (xSemaphore_consumer == NULL)
+    {
+        PRINTF("xSemaphore_consumer creation failed.\r\n");
+        vTaskSuspend(NULL);
+    }
+
 
     gpio_pin_config_t led_config = {kGPIO_DigitalOutput, 0, kGPIO_NoIntmode};
 
@@ -87,69 +105,23 @@ static void producer_task(void *pvParameters)
 {
     uint32_t i;
 
-    PRINTF("Producer_task created.\r\n");
-    xSemaphore_producer = xSemaphoreCreateBinary();
-    if (xSemaphore_producer == NULL)
-    {
-        PRINTF("xSemaphore_producer creation failed.\r\n");
-        vTaskSuspend(NULL);
-    }
-
-    xSemaphore_consumer = xSemaphoreCreateBinary();
-    if (xSemaphore_consumer == NULL)
-    {
-        PRINTF("xSemaphore_consumer creation failed.\r\n");
-        vTaskSuspend(NULL);
-    }
-
-    for (i = 0; i < CONSUMER_LINE_SIZE; i++)
-    {
-        if (xTaskCreate(consumer_task, "CONSUMER_TASK", configMINIMAL_STACK_SIZE + 128, (void *)i, TASK_PRIO, NULL) !=
-            pdPASS)
-        {
-            PRINTF("Task creation failed!.\r\n");
-            vTaskSuspend(NULL);
-        }
-        else
-        {
-            PRINTF("Consumer_task %d created.\r\n", i);
-        }
-    }
-
     while (1)
     {
-        /* Producer is ready to provide item. */
-        xSemaphoreGive(xSemaphore_consumer);
+
         /* Producer is waiting when consumer will be ready to accept item. */
-        if (xSemaphoreTake(xSemaphore_producer, portMAX_DELAY) == pdTRUE)
-        {
-            PRINTF("Producer released item.\r\n");
-        }
-        else
-        {
-            PRINTF("Producer is waiting for customer.\r\n");
-        }
-    }
-}
-
-/*!
- * @brief Task consumer_task.
- */
-static void consumer_task(void *pvParameters)
-{
-    PRINTF("Consumer number: %d\r\n", pvParameters);
-    while (1)
-    {
-        /* Consumer is ready to accept. */
-        xSemaphoreGive(xSemaphore_producer);
-        /* Consumer is waiting when producer will be ready to produce item. */
         if (xSemaphoreTake(xSemaphore_consumer, portMAX_DELAY) == pdTRUE)
         {
-            PRINTF("Consumer %d accepted item.\r\n", pvParameters);
+        	uint32_t cycleCnt = DWT->CYCCNT;
+        	intial_millis = intial_millis - (SysTick->VAL);
+
+            PRINTF("xSemaphore take %d:%d\r\n",cycleCnt,intial_millis);
+
         }
         else
         {
-            PRINTF("Consumer %d is waiting for producer.\r\n", pvParameters);
+            PRINTF("xSemaphore waiting int.\r\n");
         }
     }
 }
+
+

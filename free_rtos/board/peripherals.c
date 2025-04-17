@@ -81,7 +81,7 @@ instance:
           - IRQn: 'GPIO5_Combined_0_15_IRQn'
           - enable_interrrupt: 'enabled'
           - enable_priority: 'true'
-          - priority: '0'
+          - priority: '2'
           - enable_custom_name: 'false'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */

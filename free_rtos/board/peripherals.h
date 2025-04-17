@@ -24,7 +24,7 @@ extern "C" {
 /* NVIC interrupt vector ID (number). */
 #define INT_0_IRQN GPIO5_Combined_0_15_IRQn
 /* NVIC interrupt vector priority. */
-#define INT_0_IRQ_PRIORITY 0
+#define INT_0_IRQ_PRIORITY 2
 /* NVIC interrupt handler identifier. */
 #define INT_0_IRQHANDLER GPIO5_Combined_0_15_IRQHandler
 /* gpio_io, 00 signal defines */
