@@ -18,25 +18,34 @@
 #include "fsl_adapter_gpio.h"
 
 /* TODO: insert other include files here. */
-static void delay(void);
 volatile bool g_InputSignal = false;
 uint32_t intial_millis=0;
+uint32_t cycleCnt=0;
+#define BOARD_USER_DEBUG_GPIO GPIO1
+#define BOARD_USER_SER_DEBUG_GPIO_PIN 19U
 
 /*!
  * @brief Interrupt service fuction of switch.
  */
 void BOARD_INITPINS_USER_BUTTON_callback(void *param)
 {
+
+	GPIO_PinWrite(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_PIN,1);
+//  GPIO_PortToggle(BOARD_USER_DEBUG_GPIO, 1u << BOARD_USER_SER_DEBUG_GPIO_PIN);
+//	GPIO_PinWrite(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_PIN,0);
+
+    GPIO_PortToggle(BOARD_USER_LED_GPIO, 1u << BOARD_USER_LED_GPIO_PIN);
+
+	intial_millis = SysTick->VAL;
+
     /* clear the interrupt status */
-    GPIO_PortClearInterruptFlags(BOARD_USER_BUTTON_GPIO, 1U << BOARD_USER_BUTTON_GPIO_PIN);
-    /* Change state of switch. */
-
-     //intial_millis = SysTick->VAL;
-
     g_InputSignal = true;
-    SDK_ISR_EXIT_BARRIER;
-}
 
+	DWT->CYCCNT = 0;
+    SDK_ISR_EXIT_BARRIER;
+    cycleCnt= DWT->CYCCNT;
+
+}
 /* TODO: insert other definitions and declarations here. */
 
 /*
@@ -57,28 +66,16 @@ int main(void)
 
     PRINTF("Hello World\r\n");
 
-    gpio_pin_config_t led_config = {kGPIO_DigitalOutput, 0, kGPIO_NoIntmode};
-
-    GPIO_PinInit(BOARD_USER_LED_GPIO, BOARD_USER_LED_GPIO_PIN, &led_config);
-    GPIO_PortEnableInterrupts(GPIO5, 1U << BOARD_USER_BUTTON_GPIO_PIN); // Se for GPIO5
-
     while (1)
     {
         if (g_InputSignal)
         {
-            PRINTF("Interruption working \r\n");
+        	intial_millis = intial_millis - (SysTick->VAL);
+            PRINTF("Interruption working %d:%d\r\n",cycleCnt,intial_millis);
+        	GPIO_PinWrite(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_PIN,0);
+
             g_InputSignal = false;
         }
-        SDK_DelayAtLeastUs(100000, SDK_DEVICE_MAXIMUM_CPU_CLOCK_FREQUENCY);
-        GPIO_PortToggle(BOARD_USER_LED_GPIO, 1u << BOARD_USER_LED_GPIO_PIN);
     }
 }
 
-static void delay(void)
-{
-    volatile uint32_t i = 0;
-    for (i = 0; i < 1000000; ++i)
-    {
-        __NOP(); /* delay */
-    }
-}
