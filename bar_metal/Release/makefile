@@ -17,7 +17,6 @@ RM := rm -rf
 -include drivers/subdir.mk
 -include device/subdir.mk
 -include component/uart/subdir.mk
--include component/timer/subdir.mk
 -include component/gpio/subdir.mk
 -include board/subdir.mk
 ifneq ($(MAKECMDGOALS),clean)
@@ -52,7 +51,7 @@ main-build: MIMXRT1052_INT_lesson.axf
 MIMXRT1052_INT_lesson.axf: $(OBJS) $(USER_OBJS) makefile $(OPTIONAL_TOOL_DEPS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -Xlinker -Map="MIMXRT1052_INT_lesson.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m7 -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -T MIMXRT1052_INT_lesson_Debug.ld -o "MIMXRT1052_INT_lesson.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -Xlinker -Map="MIMXRT1052_INT_lesson.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m7 -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -T MIMXRT1052_INT_lesson_Release.ld -o "MIMXRT1052_INT_lesson.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

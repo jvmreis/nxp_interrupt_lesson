@@ -100,7 +100,7 @@ pin_labels:
 - {pin_num: G14, pin_signal: GPIO_AD_B0_05, label: 'CAN_STBY/BOOT_MODE[1]/Flash_RST/U12[8]', identifier: CAN_STBY}
 - {pin_num: E14, pin_signal: GPIO_AD_B0_06, label: 'JTAG_TMS/J21[7]/SWD_DIO'}
 - {pin_num: F12, pin_signal: GPIO_AD_B0_07, label: 'JTAG_TCK/J21[9]/SWD_CLK'}
-- {pin_num: F13, pin_signal: GPIO_AD_B0_08, label: JTAG_MOD}
+- {pin_num: F13, pin_signal: GPIO_AD_B0_08, label: JTAG_MOD, identifier: GPIO_int_timer}
 - {pin_num: F14, pin_signal: GPIO_AD_B0_09, label: LED_1, identifier: LED;LED_1;USER_led}
 - {pin_num: G13, pin_signal: GPIO_AD_B0_10, label: 'JTAG_TDO/J21[13]/INT1_COMBO/ENET_INT/J22[6]/U32[11]', identifier: INT1_COMBO}
 - {pin_num: G10, pin_signal: GPIO_AD_B0_11, label: 'JTAG_nTRST/J21[3]/INT2_COMBO/LCD_TOUCH_INT/J22[3]/U32[9]', identifier: INT2_COMBO}
@@ -234,6 +234,7 @@ BOARD_InitPins:
   - {pin_num: M12, peripheral: GPIO1, signal: 'gpio_io, 19', pin_signal: GPIO_AD_B1_03, identifier: GPIO_debug, direction: OUTPUT}
   - {pin_num: F14, peripheral: GPIO1, signal: 'gpio_io, 09', pin_signal: GPIO_AD_B0_09, identifier: USER_led, direction: OUTPUT}
   - {pin_num: L6, peripheral: GPIO5, signal: 'gpio_io, 00', pin_signal: WAKEUP, identifier: USER_BUTTON, direction: INPUT, gpio_interrupt: kGPIO_IntFallingEdge}
+  - {pin_num: F13, peripheral: GPT2, signal: 'gpt_compare, 3', pin_signal: GPIO_AD_B0_08}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 
@@ -276,6 +277,9 @@ void BOARD_InitPins(void) {
   /* Enable GPIO pin interrupt on WAKEUP (pin L6) */
   GPIO_PortEnableInterrupts(GPIO5, 1U << 0U);
 
+  IOMUXC_SetPinMux(
+      IOMUXC_GPIO_AD_B0_08_GPT2_COMPARE3,     /* GPIO_AD_B0_08 is configured as GPT2_COMPARE3 */
+      0U);                                    /* Software Input On Field: Input Path is determined by functionality */
   IOMUXC_SetPinMux(
       IOMUXC_GPIO_AD_B0_09_GPIO1_IO09,        /* GPIO_AD_B0_09 is configured as GPIO1_IO09 */
       0U);                                    /* Software Input On Field: Input Path is determined by functionality */

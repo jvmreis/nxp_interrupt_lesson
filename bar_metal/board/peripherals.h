@@ -12,6 +12,8 @@
 #include "fsl_common.h"
 #include "fsl_adapter_gpio.h"
 #include "pin_mux.h"
+#include "fsl_gpt.h"
+#include "fsl_clock.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -32,11 +34,24 @@ extern "C" {
 #define BOARD_INITPINS_USER_BUTTON_PIN_LEVEL 0U
 /* Definition of the pin trigger mode */
 #define BOARD_INITPINS_USER_BUTTON_TRIGGER_MODE kHAL_GpioInterruptFallingEdge
+/* Definition of peripheral ID */
+#define GPT2_PERIPHERAL GPT2
+/* Definition of the clock source frequency */
+#define GPT2_CLOCK_SOURCE 75000000UL
+/* Definition of GPT2 channel kGPT_OutputCompare_Channel3 */
+#define GPT2_GPT2_GPT_IRQHANDLER_TIMER_OUTPUT kGPT_OutputCompare_Channel3
+/* GPT2 interrupt vector ID (number). */
+#define GPT2_GPT_IRQN GPT2_IRQn
+/* GPT2 interrupt vector priority. */
+#define GPT2_GPT_IRQ_PRIORITY 3
+/* GPT2 interrupt handler identifier. */
+#define GPT_irq_handler_compare GPT2_IRQHandler
 
 /***********************************************************************************************************************
  * Global variables
  **********************************************************************************************************************/
 extern GPIO_HANDLE_DEFINE(BOARD_INITPINS_USER_BUTTON_handle);
+extern const gpt_config_t GPT2_config;
 
 /***********************************************************************************************************************
  * Global functions

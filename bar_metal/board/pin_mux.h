@@ -93,6 +93,15 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_USER_BUTTON_PIN                                        0U   /*!< PORT pin number */
 #define BOARD_INITPINS_USER_BUTTON_PIN_MASK                           (1U << 0U)   /*!< PORT pin mask */
 
+/* GPIO_AD_B0_08 (coord F13), JTAG_MOD */
+/* Routed pin properties */
+#define BOARD_INITPINS_GPIO_int_timer_PERIPHERAL                            GPT2   /*!< Peripheral name */
+#define BOARD_INITPINS_GPIO_int_timer_SIGNAL                         gpt_compare   /*!< Signal name */
+#define BOARD_INITPINS_GPIO_int_timer_CHANNEL                                 3U   /*!< Signal channel */
+#define BOARD_INITPINS_GPIO_int_timer_PIN_NAME                     GPIO_AD_B0_08   /*!< Routed pin name */
+#define BOARD_INITPINS_GPIO_int_timer_LABEL                           "JTAG_MOD"   /*!< Label */
+#define BOARD_INITPINS_GPIO_int_timer_NAME                      "GPIO_int_timer"   /*!< Identifier */
+
 
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
