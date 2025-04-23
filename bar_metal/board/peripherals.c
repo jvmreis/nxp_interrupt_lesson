@@ -182,54 +182,58 @@ instance:
     - gpt_config:
       - clockSource: 'kGPT_ClockSource_Periph'
       - clockSourceFreq: 'ClocksTool_DefaultInit'
-      - oscDivider: '4'
-      - divider: '1012'
-      - enableFreeRun: 'true'
+      - oscDivider: '1'
+      - divider: '1'
+      - enableFreeRun: 'false'
       - enableRunInWait: 'true'
       - enableRunInStop: 'true'
       - enableRunInDoze: 'false'
-      - enableRunInDbg: 'true'
+      - enableRunInDbg: 'false'
       - enableMode: 'true'
     - input_capture_channels: []
     - output_compare_channels:
       - 0:
-        - channelName: 'GPT2_GPT_IRQHANDLER_timer'
+        - channelName: ''
         - channel: 'kGPT_OutputCompare_Channel3'
         - mode: 'kGPT_OutputOperation_Toggle'
-        - compare_value_str: '18500'
+        - compare_value_str: '7500000'
+      - 1:
+        - channelName: ''
+        - channel: 'kGPT_OutputCompare_Channel1'
+        - mode: 'kGPT_OutputOperation_Disconnected'
+        - compare_value_str: '75000000'
     - interrupt_requests: 'kGPT_OutputCompare3InterruptEnable'
     - isInterruptEnabled: 'true'
     - interrupt:
       - IRQn: 'GPT2_IRQn'
       - enable_interrrupt: 'enabled'
-      - enable_priority: 'true'
-      - priority: '3'
-      - enable_custom_name: 'true'
-      - handler_custom_name: 'GPT_irq_handler_compare'
+      - enable_priority: 'false'
+      - priority: '0'
+      - enable_custom_name: 'false'
     - EnableTimerInInit: 'true'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 const gpt_config_t GPT2_config = {
   .clockSource = kGPT_ClockSource_Periph,
-  .divider = 1012UL,
-  .enableFreeRun = true,
+  .divider = 1UL,
+  .enableFreeRun = false,
   .enableRunInWait = true,
   .enableRunInStop = true,
   .enableRunInDoze = false,
-  .enableRunInDbg = true,
+  .enableRunInDbg = false,
   .enableMode = true
 };
 
 static void GPT2_init(void) {
   /* GPT device and channels initialization */
   GPT_Init(GPT2_PERIPHERAL, &GPT2_config);
-  GPT_SetOscClockDivider(GPT2_PERIPHERAL, 4);
-  GPT_SetOutputCompareValue(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel3, 18500);
+  GPT_SetOscClockDivider(GPT2_PERIPHERAL, 1);
+  GPT_SetOutputCompareValue(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel3, 7500000);
   GPT_SetOutputOperationMode(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel3, kGPT_OutputOperation_Toggle);
+  GPT_SetOutputCompareValue(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel1, 75000000);
+  GPT_SetOutputOperationMode(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel1, kGPT_OutputOperation_Disconnected);
   /* Enable GPT interrupt sources */
   GPT_EnableInterrupts(GPT2_PERIPHERAL, kGPT_OutputCompare3InterruptEnable);
-  /* Interrupt vector GPT2_IRQn priority settings in the NVIC. */
-  NVIC_SetPriority(GPT2_GPT_IRQN, GPT2_GPT_IRQ_PRIORITY);
   /* Enable interrupt GPT2_GPT_IRQN request in the NVIC */
   EnableIRQ(GPT2_GPT_IRQN);
   /* Start the GPT timer */ 

@@ -38,14 +38,10 @@ extern "C" {
 #define GPT2_PERIPHERAL GPT2
 /* Definition of the clock source frequency */
 #define GPT2_CLOCK_SOURCE 75000000UL
-/* Definition of GPT2 channel kGPT_OutputCompare_Channel3 */
-#define GPT2_GPT2_GPT_IRQHANDLER_TIMER_OUTPUT kGPT_OutputCompare_Channel3
 /* GPT2 interrupt vector ID (number). */
 #define GPT2_GPT_IRQN GPT2_IRQn
-/* GPT2 interrupt vector priority. */
-#define GPT2_GPT_IRQ_PRIORITY 3
 /* GPT2 interrupt handler identifier. */
-#define GPT_irq_handler_compare GPT2_IRQHandler
+#define GPT2_GPT_IRQHANDLER GPT2_IRQHandler
 
 /***********************************************************************************************************************
  * Global variables

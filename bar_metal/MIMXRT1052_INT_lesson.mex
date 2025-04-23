@@ -1233,6 +1233,16 @@
                   <data type="Version">2.0.0</data>
                </feature>
             </dependency>
+            <dependency resourceType="Tool" resourceId="Pins" description="The Pins tool is required by the Peripherals tool, but it is disabled." problem_level="2" source="Peripherals">
+               <feature name="enabled" evaluation="equal">
+                  <data>true</data>
+               </feature>
+            </dependency>
+            <dependency resourceType="Tool" resourceId="Clocks" description="The Clocks tool is required by the Peripherals tool, but it is disabled." problem_level="2" source="Peripherals">
+               <feature name="enabled" evaluation="equal">
+                  <data>true</data>
+               </feature>
+            </dependency>
          </dependencies>
          <generated_project_files>
             <file path="board/peripherals.c" update_enabled="true"/>
@@ -1318,22 +1328,28 @@
                         <struct name="gpt_config">
                            <setting name="clockSource" value="kGPT_ClockSource_Periph"/>
                            <setting name="clockSourceFreq" value="ClocksTool_DefaultInit"/>
-                           <setting name="oscDivider" value="4"/>
-                           <setting name="divider" value="1012"/>
-                           <setting name="enableFreeRun" value="true"/>
+                           <setting name="oscDivider" value="1"/>
+                           <setting name="divider" value="1"/>
+                           <setting name="enableFreeRun" value="false"/>
                            <setting name="enableRunInWait" value="true"/>
                            <setting name="enableRunInStop" value="true"/>
                            <setting name="enableRunInDoze" value="false"/>
-                           <setting name="enableRunInDbg" value="true"/>
+                           <setting name="enableRunInDbg" value="false"/>
                            <setting name="enableMode" value="true"/>
                         </struct>
                         <array name="input_capture_channels"/>
                         <array name="output_compare_channels">
                            <struct name="0">
-                              <setting name="channelName" value="GPT2_GPT_IRQHANDLER_timer"/>
+                              <setting name="channelName" value=""/>
                               <setting name="channel" value="kGPT_OutputCompare_Channel3"/>
                               <setting name="mode" value="kGPT_OutputOperation_Toggle"/>
-                              <setting name="compare_value_str" value="18500"/>
+                              <setting name="compare_value_str" value="7500000"/>
+                           </struct>
+                           <struct name="1">
+                              <setting name="channelName" value=""/>
+                              <setting name="channel" value="kGPT_OutputCompare_Channel1"/>
+                              <setting name="mode" value="kGPT_OutputOperation_Disconnected"/>
+                              <setting name="compare_value_str" value="75000000"/>
                            </struct>
                         </array>
                         <set name="interrupt_requests">
@@ -1345,10 +1361,9 @@
                         <struct name="interrupt">
                            <setting name="IRQn" value="GPT2_IRQn"/>
                            <setting name="enable_interrrupt" value="enabled"/>
-                           <setting name="enable_priority" value="true"/>
-                           <setting name="priority" value="3"/>
-                           <setting name="enable_custom_name" value="true"/>
-                           <setting name="handler_custom_name" value="GPT_irq_handler_compare"/>
+                           <setting name="enable_priority" value="false"/>
+                           <setting name="priority" value="0"/>
+                           <setting name="enable_custom_name" value="false"/>
                         </struct>
                         <setting name="EnableTimerInInit" value="true"/>
                      </config_set>
