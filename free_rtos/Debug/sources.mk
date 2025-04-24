@@ -16,6 +16,7 @@ OBJS :=
 SUBDIRS := \
 board \
 component/gpio \
+component/timer \
 component/uart \
 device \
 drivers \

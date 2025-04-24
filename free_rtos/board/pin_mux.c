@@ -13,6 +13,7 @@ mcu_data: ksdk2_0
 processor_version: 24.12.10
 board: IMXRT1050-EVKB
 pin_labels:
+- {pin_num: F13, pin_signal: GPIO_AD_B0_08, label: JTAG_MOD, identifier: GPIO_int_timer}
 - {pin_num: F14, pin_signal: GPIO_AD_B0_09, label: LED_1, identifier: USER_led}
 - {pin_num: M12, pin_signal: GPIO_AD_B1_03, label: 'SPDIF_IN/J22[8]', identifier: SPDIF_IN;GPIO_debug}
 - {pin_num: L6, pin_signal: WAKEUP, label: GPIO_int, identifier: USER_BUTTON}
@@ -46,6 +47,7 @@ BOARD_InitPins:
   - {pin_num: F14, peripheral: GPIO1, signal: 'gpio_io, 09', pin_signal: GPIO_AD_B0_09, direction: OUTPUT}
   - {pin_num: L6, peripheral: GPIO5, signal: 'gpio_io, 00', pin_signal: WAKEUP, direction: INPUT, gpio_interrupt: kGPIO_IntFallingEdge}
   - {pin_num: M12, peripheral: GPIO1, signal: 'gpio_io, 19', pin_signal: GPIO_AD_B1_03, identifier: GPIO_debug, direction: OUTPUT}
+  - {pin_num: F13, peripheral: GPT2, signal: 'gpt_compare, 3', pin_signal: GPIO_AD_B0_08}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 
@@ -88,6 +90,7 @@ void BOARD_InitPins(void) {
   /* Enable GPIO pin interrupt on WAKEUP (pin L6) */
   GPIO_PortEnableInterrupts(GPIO5, 1U << 0U);
 
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_08_GPT2_COMPARE3, 0U); 
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_09_GPIO1_IO09, 0U); 
 #if FSL_IOMUXC_DRIVER_VERSION >= MAKE_VERSION(2, 0, 3)
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_12_LPUART1_TXD, 0U); 

@@ -43,7 +43,9 @@ static void producer_task(void *pvParameters);
 static void consumer_task(void *pvParameters);
 
 volatile bool g_InputSignal = false;
-uint32_t intial_millis=0;
+volatile uint32_t intial_millis=0;
+volatile uint32_t cycleCnt=0;
+
 
 
 void BOARD_INITPINS_USER_BUTTON_callback(void *param)
@@ -63,6 +65,35 @@ void BOARD_INITPINS_USER_BUTTON_callback(void *param)
     SDK_ISR_EXIT_BARRIER;
 }
 
+
+/* GPT2_IRQn interrupt handler */
+void GPT2_IRQHandler(void) {
+  /*  Place your code here */
+
+
+    uint32_t status = GPT_GetStatusFlags(GPT2,kGPT_OutputCompare3Flag);
+
+    if (status & kGPT_OutputCompare3Flag)
+    {
+        GPIO_PortToggle(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_MASK);
+    }
+
+    cycleCnt = DWT->CYCCNT;
+	intial_millis = SysTick->VAL;
+
+    GPT_ClearStatusFlags(GPT2, kGPT_OutputCompare3Flag); // clean gpt interrupt flag
+
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+    /* Producer is ready to provide item. */
+    xSemaphoreGiveFromISR(xSemaphore_consumer,&xHigherPriorityTaskWoken);
+
+  /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F
+     Store immediate overlapping exception return operation might vector to incorrect interrupt. */
+  #if defined __CORTEX_M && (__CORTEX_M == 4U)
+    __DSB();
+  #endif
+}
 /*******************************************************************************
  * Code
  ******************************************************************************/
@@ -71,14 +102,6 @@ void BOARD_INITPINS_USER_BUTTON_callback(void *param)
  */
 int main(void)
 {
-    /* Init board hardware. */
-    BOARD_InitHardware();
-    BOARD_InitBootPeripherals();
-    PRINTF("Hello World\r\n");
-
-    CoreDebug->DEMCR |= 0x01000000;
-    DWT->CTRL |= 0x00000001;
-
 
     xSemaphore_consumer = xSemaphoreCreateBinary();
     if (xSemaphore_consumer == NULL)
@@ -86,6 +109,14 @@ int main(void)
         PRINTF("xSemaphore_consumer creation failed.\r\n");
         vTaskSuspend(NULL);
     }
+
+    /* Init board hardware. */
+    BOARD_InitHardware();
+    BOARD_InitBootPeripherals();
+    PRINTF("Hello World\r\n");
+
+    CoreDebug->DEMCR |= 0x01000000;
+    DWT->CTRL |= 0x00000001;
 
 
     gpio_pin_config_t led_config = {kGPIO_DigitalOutput, 0, kGPIO_NoIntmode};
@@ -111,21 +142,20 @@ int main(void)
  */
 static void producer_task(void *pvParameters)
 {
-    uint32_t i;
 
     while (1)
     {
-
         /* Producer is waiting when consumer will be ready to accept item. */
         if (xSemaphoreTake(xSemaphore_consumer, portMAX_DELAY) == pdTRUE)
         {
-        	uint32_t cycleCnt = DWT->CYCCNT;
+        	//cycleCnt = DWT->CYCCNT;
         	intial_millis = intial_millis - (SysTick->VAL);
 
             GPIO_PortToggle(BOARD_USER_LED_GPIO, BOARD_USER_LED_GPIO_PIN_MASK);
 
             GPIO_PortToggle(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_MASK);
 
+            DWT->CYCCNT = 0;
 
             PRINTF("xSemaphore take %d:%d\r\n",cycleCnt,intial_millis);
 

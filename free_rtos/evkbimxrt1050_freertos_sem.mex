@@ -25,6 +25,7 @@
          <pins_profile>
             <processor_version>24.12.10</processor_version>
             <pin_labels>
+               <pin_label pin_num="F13" pin_signal="GPIO_AD_B0_08" label="JTAG_MOD" identifier="GPIO_int_timer"/>
                <pin_label pin_num="F14" pin_signal="GPIO_AD_B0_09" label="LED_1" identifier="USER_led"/>
                <pin_label pin_num="M12" pin_signal="GPIO_AD_B1_03" label="SPDIF_IN/J22[8]" identifier="SPDIF_IN;GPIO_debug"/>
                <pin_label pin_num="L6" pin_signal="WAKEUP" label="GPIO_int" identifier="USER_BUTTON"/>
@@ -46,6 +47,11 @@
                      </feature>
                   </dependency>
                   <dependency resourceType="Peripheral" resourceId="GPIO5" description="Peripheral GPIO5 signals are routed in the Pins Tool, but the peripheral is not initialized in the Peripherals Tool." problem_level="1" source="Pins:BOARD_InitPins">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="Peripheral" resourceId="GPT2" description="Peripheral GPT2 signals are routed in the Pins Tool, but the peripheral is not initialized in the Peripherals Tool." problem_level="1" source="Pins:BOARD_InitPins">
                      <feature name="initialized" evaluation="equal">
                         <data>true</data>
                      </feature>
@@ -110,6 +116,7 @@
                         <pin_feature name="direction" value="OUTPUT"/>
                      </pin_features>
                   </pin>
+                  <pin peripheral="GPT2" signal="gpt_compare, 3" pin_num="F13" pin_signal="GPIO_AD_B0_08"/>
                </pins>
             </function>
          </functions_list>
@@ -549,7 +556,22 @@
                   <data type="Version">1.0.1</data>
                </feature>
             </dependency>
+            <dependency resourceType="SWComponent" resourceId="platform.drivers.gpt" description="gpt is not found in the toolchain/IDE project. The project will not compile!" problem_level="2" source="Peripherals">
+               <feature name="enabled" evaluation="equal">
+                  <data type="Boolean">true</data>
+               </feature>
+            </dependency>
+            <dependency resourceType="SWComponent" resourceId="platform.drivers.gpt" description="An unsupported version of the gpt in the toolchain/IDE project. Required: ${required_value}, actual: ${actual_value}. The project might not compile correctly." problem_level="1" source="Peripherals">
+               <feature name="version" evaluation="equivalent">
+                  <data type="Version">2.0.0</data>
+               </feature>
+            </dependency>
             <dependency resourceType="Tool" resourceId="Pins" description="The Pins tool is required by the Peripherals tool, but it is disabled." problem_level="2" source="Peripherals">
+               <feature name="enabled" evaluation="equal">
+                  <data>true</data>
+               </feature>
+            </dependency>
+            <dependency resourceType="Tool" resourceId="Clocks" description="The Clocks tool is required by the Peripherals tool, but it is disabled." problem_level="2" source="Peripherals">
                <feature name="enabled" evaluation="equal">
                   <data>true</data>
                </feature>
@@ -572,12 +594,23 @@
                         <data type="Boolean">true</data>
                      </feature>
                   </dependency>
+                  <dependency resourceType="ClockOutput" resourceId="PERCLK_CLK_ROOT" description="PERCLK_CLK_ROOT is inactive." problem_level="2" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="frequency" evaluation="greaterThan">
+                        <data type="Frequency" unit="Hz">0</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="GPT2.gpt_compare.3" description="Signal COMPARE, 3 is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="routed" evaluation="equal">
+                        <data type="Boolean">true</data>
+                     </feature>
+                  </dependency>
                </dependencies>
                <instances>
                   <instance name="NVIC" uuid="a1e5a507-c1a9-48c3-b556-727bcc17ebf1" type="nvic" type_id="nvic" mode="general" peripheral="NVIC" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
                      <config_set name="nvic">
                         <array name="interrupt_table">
                            <struct name="0"/>
+                           <struct name="1"/>
                         </array>
                         <array name="interrupts">
                            <struct name="0">
@@ -621,6 +654,51 @@
                         </array>
                         <struct name="globalCfg"/>
                         <array name="differentPeripheralsAdd"/>
+                     </config_set>
+                  </instance>
+                  <instance name="GPT2" uuid="6d85c135-1f6a-4ce7-950b-f808e502e6ce" type="gpt" type_id="gpt_2.0.0" mode="general" peripheral="GPT2" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
+                     <config_set name="fsl_gpt">
+                        <struct name="gpt_config">
+                           <setting name="clockSource" value="kGPT_ClockSource_Periph"/>
+                           <setting name="clockSourceFreq" value="ClocksTool_DefaultInit"/>
+                           <setting name="oscDivider" value="1"/>
+                           <setting name="divider" value="1"/>
+                           <setting name="enableFreeRun" value="false"/>
+                           <setting name="enableRunInWait" value="true"/>
+                           <setting name="enableRunInStop" value="true"/>
+                           <setting name="enableRunInDoze" value="false"/>
+                           <setting name="enableRunInDbg" value="false"/>
+                           <setting name="enableMode" value="true"/>
+                        </struct>
+                        <array name="input_capture_channels"/>
+                        <array name="output_compare_channels">
+                           <struct name="0">
+                              <setting name="channelName" value=""/>
+                              <setting name="channel" value="kGPT_OutputCompare_Channel1"/>
+                              <setting name="mode" value="kGPT_OutputOperation_Disconnected"/>
+                              <setting name="compare_value_str" value="75000000"/>
+                           </struct>
+                           <struct name="1">
+                              <setting name="channelName" value=""/>
+                              <setting name="channel" value="kGPT_OutputCompare_Channel3"/>
+                              <setting name="mode" value="kGPT_OutputOperation_Toggle"/>
+                              <setting name="compare_value_str" value="1"/>
+                           </struct>
+                        </array>
+                        <set name="interrupt_requests">
+                           <selected>
+                              <id>kGPT_OutputCompare3InterruptEnable</id>
+                           </selected>
+                        </set>
+                        <setting name="isInterruptEnabled" value="true"/>
+                        <struct name="interrupt">
+                           <setting name="IRQn" value="GPT2_IRQn"/>
+                           <setting name="enable_interrrupt" value="enabled"/>
+                           <setting name="enable_priority" value="true"/>
+                           <setting name="priority" value="2"/>
+                           <setting name="enable_custom_name" value="false"/>
+                        </struct>
+                        <setting name="EnableTimerInInit" value="true"/>
                      </config_set>
                   </instance>
                </instances>

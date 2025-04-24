@@ -20,6 +20,7 @@ RM := rm -rf
 -include drivers/subdir.mk
 -include device/subdir.mk
 -include component/uart/subdir.mk
+-include component/timer/subdir.mk
 -include component/gpio/subdir.mk
 -include board/subdir.mk
 ifneq ($(MAKECMDGOALS),clean)
