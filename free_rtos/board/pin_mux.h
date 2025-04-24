@@ -91,6 +91,12 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_GPIO_debug_PIN                                        19U   /*!< PORT pin number */
 #define BOARD_INITPINS_GPIO_debug_PIN_MASK                           (1U << 19U)   /*!< PORT pin mask */
 
+/* GPIO_AD_B0_08 (coord F13), JTAG_MOD */
+/* Routed pin properties */
+#define BOARD_INITPINS_GPIO_int_timer_PERIPHERAL                            GPT2   /*!< Peripheral name */
+#define BOARD_INITPINS_GPIO_int_timer_SIGNAL                         gpt_compare   /*!< Signal name */
+#define BOARD_INITPINS_GPIO_int_timer_CHANNEL                                 3U   /*!< Signal channel */
+
 
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
