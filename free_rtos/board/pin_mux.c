@@ -14,6 +14,7 @@ processor_version: 24.12.10
 board: IMXRT1050-EVKB
 pin_labels:
 - {pin_num: F14, pin_signal: GPIO_AD_B0_09, label: LED_1, identifier: USER_led}
+- {pin_num: M12, pin_signal: GPIO_AD_B1_03, label: 'SPDIF_IN/J22[8]', identifier: SPDIF_IN;GPIO_debug}
 - {pin_num: L6, pin_signal: WAKEUP, label: GPIO_int, identifier: USER_BUTTON}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
@@ -44,6 +45,7 @@ BOARD_InitPins:
     pull_keeper_select: Keeper, pull_keeper_enable: Enable, open_drain: Disable, speed: MHZ_100, drive_strength: R0_6, slew_rate: Slow}
   - {pin_num: F14, peripheral: GPIO1, signal: 'gpio_io, 09', pin_signal: GPIO_AD_B0_09, direction: OUTPUT}
   - {pin_num: L6, peripheral: GPIO5, signal: 'gpio_io, 00', pin_signal: WAKEUP, direction: INPUT, gpio_interrupt: kGPIO_IntFallingEdge}
+  - {pin_num: M12, peripheral: GPIO1, signal: 'gpio_io, 19', pin_signal: GPIO_AD_B1_03, identifier: GPIO_debug, direction: OUTPUT}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 
@@ -65,6 +67,15 @@ void BOARD_InitPins(void) {
   };
   /* Initialize GPIO functionality on GPIO_AD_B0_09 (pin F14) */
   GPIO_PinInit(GPIO1, 9U, &USER_led_config);
+
+  /* GPIO configuration of GPIO_debug on GPIO_AD_B1_03 (pin M12) */
+  gpio_pin_config_t GPIO_debug_config = {
+      .direction = kGPIO_DigitalOutput,
+      .outputLogic = 0U,
+      .interruptMode = kGPIO_NoIntmode
+  };
+  /* Initialize GPIO functionality on GPIO_AD_B1_03 (pin M12) */
+  GPIO_PinInit(GPIO1, 19U, &GPIO_debug_config);
 
   /* GPIO configuration of USER_BUTTON on WAKEUP (pin L6) */
   gpio_pin_config_t USER_BUTTON_config = {
@@ -88,6 +99,7 @@ void BOARD_InitPins(void) {
 #else
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_13_LPUART1_RX, 0U); 
 #endif
+  IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_03_GPIO1_IO19, 0U); 
   IOMUXC_SetPinMux(IOMUXC_SNVS_WAKEUP_GPIO5_IO00, 0U); 
 #if FSL_IOMUXC_DRIVER_VERSION >= MAKE_VERSION(2, 0, 3)
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B0_12_LPUART1_TXD, 0x10B0U); 

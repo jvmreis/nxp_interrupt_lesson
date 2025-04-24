@@ -26,6 +26,7 @@
             <processor_version>24.12.10</processor_version>
             <pin_labels>
                <pin_label pin_num="F14" pin_signal="GPIO_AD_B0_09" label="LED_1" identifier="USER_led"/>
+               <pin_label pin_num="M12" pin_signal="GPIO_AD_B1_03" label="SPDIF_IN/J22[8]" identifier="SPDIF_IN;GPIO_debug"/>
                <pin_label pin_num="L6" pin_signal="WAKEUP" label="GPIO_int" identifier="USER_BUTTON"/>
             </pin_labels>
             <power_domains/>
@@ -101,6 +102,12 @@
                      <pin_features>
                         <pin_feature name="direction" value="INPUT"/>
                         <pin_feature name="gpio_interrupt" value="kGPIO_IntFallingEdge"/>
+                     </pin_features>
+                  </pin>
+                  <pin peripheral="GPIO1" signal="gpio_io, 19" pin_num="M12" pin_signal="GPIO_AD_B1_03">
+                     <pin_features>
+                        <pin_feature name="identifier" value="GPIO_debug"/>
+                        <pin_feature name="direction" value="OUTPUT"/>
                      </pin_features>
                   </pin>
                </pins>

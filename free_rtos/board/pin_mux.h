@@ -76,6 +76,21 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_USER_BUTTON_PIN                                        0U   /*!< PORT pin number */
 #define BOARD_INITPINS_USER_BUTTON_PIN_MASK                           (1U << 0U)   /*!< PORT pin mask */
 
+/* GPIO_AD_B1_03 (coord M12), SPDIF_IN/J22[8] */
+/* Routed pin properties */
+#define BOARD_INITPINS_GPIO_debug_PERIPHERAL                               GPIO1   /*!< Peripheral name */
+#define BOARD_INITPINS_GPIO_debug_SIGNAL                                 gpio_io   /*!< Signal name */
+#define BOARD_INITPINS_GPIO_debug_CHANNEL                                    19U   /*!< Signal channel */
+
+/* Symbols to be used with GPIO driver */
+#define BOARD_INITPINS_GPIO_debug_GPIO                                     GPIO1   /*!< GPIO peripheral base pointer */
+#define BOARD_INITPINS_GPIO_debug_INIT_GPIO_VALUE                             0U   /*!< GPIO output initial state */
+#define BOARD_INITPINS_GPIO_debug_GPIO_PIN                                   19U   /*!< GPIO pin number */
+#define BOARD_INITPINS_GPIO_debug_GPIO_PIN_MASK                      (1U << 19U)   /*!< GPIO pin mask */
+#define BOARD_INITPINS_GPIO_debug_PORT                                     GPIO1   /*!< PORT peripheral base pointer */
+#define BOARD_INITPINS_GPIO_debug_PIN                                        19U   /*!< PORT pin number */
+#define BOARD_INITPINS_GPIO_debug_PIN_MASK                           (1U << 19U)   /*!< PORT pin mask */
+
 
 /*!
  * @brief Configures pin routing and optionally pin electrical features.

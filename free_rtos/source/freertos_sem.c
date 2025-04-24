@@ -28,6 +28,14 @@
 #define CONSUMER_LINE_SIZE 3
 SemaphoreHandle_t xSemaphore_producer;
 SemaphoreHandle_t xSemaphore_consumer;
+
+#define BOARD_USER_DEBUG_GPIO GPIO1
+#define BOARD_USER_SER_DEBUG_GPIO_PIN 19U
+
+#define BOARD_USER_SER_DEBUG_GPIO_MASK 1u << BOARD_USER_SER_DEBUG_GPIO_PIN
+
+#define BOARD_USER_LED_GPIO_PIN_MASK 1u << BOARD_USER_LED_GPIO_PIN
+
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -113,6 +121,11 @@ static void producer_task(void *pvParameters)
         {
         	uint32_t cycleCnt = DWT->CYCCNT;
         	intial_millis = intial_millis - (SysTick->VAL);
+
+            GPIO_PortToggle(BOARD_USER_LED_GPIO, BOARD_USER_LED_GPIO_PIN_MASK);
+
+            GPIO_PortToggle(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_MASK);
+
 
             PRINTF("xSemaphore take %d:%d\r\n",cycleCnt,intial_millis);
 
