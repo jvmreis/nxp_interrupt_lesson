@@ -266,6 +266,7 @@
                      <pin_features>
                         <pin_feature name="identifier" value="GPIO_debug"/>
                         <pin_feature name="direction" value="OUTPUT"/>
+                        <pin_feature name="slew_rate" value="Fast"/>
                      </pin_features>
                   </pin>
                   <pin peripheral="GPIO1" signal="gpio_io, 09" pin_num="F14" pin_signal="GPIO_AD_B0_09">
@@ -279,9 +280,14 @@
                         <pin_feature name="identifier" value="USER_BUTTON"/>
                         <pin_feature name="direction" value="INPUT"/>
                         <pin_feature name="gpio_interrupt" value="kGPIO_IntFallingEdge"/>
+                        <pin_feature name="slew_rate" value="Fast"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="GPT2" signal="gpt_compare, 3" pin_num="F13" pin_signal="GPIO_AD_B0_08"/>
+                  <pin peripheral="GPT2" signal="gpt_compare, 3" pin_num="F13" pin_signal="GPIO_AD_B0_08">
+                     <pin_features>
+                        <pin_feature name="slew_rate" value="Fast"/>
+                     </pin_features>
+                  </pin>
                </pins>
             </function>
             <function name="BOARD_InitDEBUG_UARTPins">
@@ -1330,7 +1336,7 @@
                            <setting name="clockSourceFreq" value="ClocksTool_DefaultInit"/>
                            <setting name="oscDivider" value="1"/>
                            <setting name="divider" value="1"/>
-                           <setting name="enableFreeRun" value="false"/>
+                           <setting name="enableFreeRun" value="true"/>
                            <setting name="enableRunInWait" value="true"/>
                            <setting name="enableRunInStop" value="true"/>
                            <setting name="enableRunInDoze" value="false"/>
@@ -1344,12 +1350,6 @@
                               <setting name="channel" value="kGPT_OutputCompare_Channel3"/>
                               <setting name="mode" value="kGPT_OutputOperation_Toggle"/>
                               <setting name="compare_value_str" value="7500000"/>
-                           </struct>
-                           <struct name="1">
-                              <setting name="channelName" value=""/>
-                              <setting name="channel" value="kGPT_OutputCompare_Channel1"/>
-                              <setting name="mode" value="kGPT_OutputOperation_Disconnected"/>
-                              <setting name="compare_value_str" value="75000000"/>
                            </struct>
                         </array>
                         <set name="interrupt_requests">
