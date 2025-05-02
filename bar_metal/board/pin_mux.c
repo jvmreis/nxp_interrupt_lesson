@@ -231,10 +231,10 @@ void BOARD_InitBootPins(void) {
 BOARD_InitPins:
 - options: {callFromInitBoot: 'true', coreID: core0, enableClock: 'true'}
 - pin_list:
-  - {pin_num: M12, peripheral: GPIO1, signal: 'gpio_io, 19', pin_signal: GPIO_AD_B1_03, identifier: GPIO_debug, direction: OUTPUT}
+  - {pin_num: M12, peripheral: GPIO1, signal: 'gpio_io, 19', pin_signal: GPIO_AD_B1_03, identifier: GPIO_debug, direction: OUTPUT, slew_rate: Fast}
   - {pin_num: F14, peripheral: GPIO1, signal: 'gpio_io, 09', pin_signal: GPIO_AD_B0_09, identifier: USER_led, direction: OUTPUT}
-  - {pin_num: L6, peripheral: GPIO5, signal: 'gpio_io, 00', pin_signal: WAKEUP, identifier: USER_BUTTON, direction: INPUT, gpio_interrupt: kGPIO_IntFallingEdge}
-  - {pin_num: F13, peripheral: GPT2, signal: 'gpt_compare, 3', pin_signal: GPIO_AD_B0_08}
+  - {pin_num: L6, peripheral: GPIO5, signal: 'gpio_io, 00', pin_signal: WAKEUP, identifier: USER_BUTTON, direction: INPUT, gpio_interrupt: kGPIO_IntFallingEdge, slew_rate: Fast}
+  - {pin_num: F13, peripheral: GPT2, signal: 'gpt_compare, 3', pin_signal: GPIO_AD_B0_08, slew_rate: Fast}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 
@@ -289,6 +289,36 @@ void BOARD_InitPins(void) {
   IOMUXC_SetPinMux(
       IOMUXC_SNVS_WAKEUP_GPIO5_IO00,          /* WAKEUP is configured as GPIO5_IO00 */
       0U);                                    /* Software Input On Field: Input Path is determined by functionality */
+  IOMUXC_SetPinConfig(
+      IOMUXC_GPIO_AD_B0_08_GPT2_COMPARE3,     /* GPIO_AD_B0_08 PAD functional properties : */
+      0xB0A1U);                               /* Slew Rate Field: Fast Slew Rate
+                                                 Drive Strength Field: Dual/Single voltage: 62/65 Ohm @ 1.8V, 57/39 Ohm @ 3.3V
+                                                 Speed Field: 100MHz - 150MHz
+                                                 Open Drain Enable Field: Open Drain Disabled (Output is CMOS)
+                                                 Pull / Keep Enable Field: Pull/Keeper Enabled
+                                                 Pull / Keep Select Field Control signal to enable internal pull-up/down resistors or pad keeper functionality.: Pull-up or pull-down (determined by PUS field).
+                                                 Pull Up / Down Config. Field Controls signals to select pull-up or pull-down internal resistance strength.: 100K Ohm Pull Up
+                                                 Hyst. Enable Field: Hysteresis Disabled (CMOS input) */
+  IOMUXC_SetPinConfig(
+      IOMUXC_GPIO_AD_B1_03_GPIO1_IO19,        /* GPIO_AD_B1_03 PAD functional properties : */
+      0x10B1U);                               /* Slew Rate Field: Fast Slew Rate
+                                                 Drive Strength Field: Dual/Single voltage: 43/43 Ohm @ 1.8V, 40/26 Ohm @ 3.3V
+                                                 Speed Field: 100MHz - 150MHz
+                                                 Open Drain Enable Field: Open Drain Disabled (Output is CMOS)
+                                                 Pull / Keep Enable Field: Pull/Keeper Enabled
+                                                 Pull / Keep Select Field Control signal to enable internal pull-up/down resistors or pad keeper functionality.: Keep the previous output value when the output driver is disabled.
+                                                 Pull Up / Down Config. Field Controls signals to select pull-up or pull-down internal resistance strength.: 100K Ohm Pull Down
+                                                 Hyst. Enable Field: Hysteresis Disabled (CMOS input) */
+  IOMUXC_SetPinConfig(
+      IOMUXC_SNVS_WAKEUP_GPIO5_IO00,          /* WAKEUP PAD functional properties : */
+      0x01B0A1U);                             /* Slew Rate Field: Fast Slew Rate
+                                                 Drive Strength Field: Dual/Single voltage: 62/65 Ohm @ 1.8V, 57/39 Ohm @ 3.3V
+                                                 Speed Field: 100MHz
+                                                 Open Drain Enable Field: Open Drain Disabled (Output is CMOS)
+                                                 Pull / Keep Enable Field: Pull/Keeper Enabled
+                                                 Pull / Keep Select Field Control signal to enable internal pull-up/down resistors or pad keeper functionality.: Pull-up or pull-down (determined by PUS field).
+                                                 Pull Up / Down Config. Field Controls signals to select pull-up or pull-down internal resistance strength.: 100K Ohm Pull Up
+                                                 Hyst. Enable Field: Hysteresis Enabled (Schmitt Trigger input) */
 }
 
 /*

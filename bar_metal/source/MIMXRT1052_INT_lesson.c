@@ -68,15 +68,15 @@ uint32_t cycleCnt=0;
 void GPT2_IRQHandler(void)
 {
 
-    if (GPT2->SR & GPT_OC3_FLAG)
-    {
+    //if (GPT2->SR & GPT_OC3_FLAG)
+    //{
         //GPIO1->DR_TOGGLE = (BOARD_USER_SER_DEBUG_GPIO_MASK);  // acesso direto, sem HAL
         GPIO1->DR = BOARD_USER_SER_DEBUG_GPIO_MASK;
 
         GPT2->SR = GPT_OC3_FLAG;  // limpa flag diretamente
         g_InputSignal = true;
 
-    }
+    //}
 
     __DSB();
 }
@@ -94,20 +94,27 @@ void GPT2_IRQHandler(void)
 void BOARD_INITPINS_USER_BUTTON_callback(void *param)
 {
 
-	GPIO_PinWrite(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_PIN,1);
-//  GPIO_PortToggle(BOARD_USER_DEBUG_GPIO, 1u << BOARD_USER_SER_DEBUG_GPIO_PIN);
-//	GPIO_PinWrite(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_PIN,0);
+//	GPIO_PinWrite(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_PIN,1);
+////  GPIO_PortToggle(BOARD_USER_DEBUG_GPIO, 1u << BOARD_USER_SER_DEBUG_GPIO_PIN);
+////	GPIO_PinWrite(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_PIN,0);
+//
+//    GPIO_PortToggle(BOARD_USER_LED_GPIO, 1u << BOARD_USER_LED_GPIO_PIN);
+//
+//	intial_millis = SysTick->VAL;
+//
+//    /* clear the interrupt status */
+//    g_InputSignal = true;
+//
+//	DWT->CYCCNT = 0;
+//    SDK_ISR_EXIT_BARRIER;
+//    cycleCnt= DWT->CYCCNT;
 
-    GPIO_PortToggle(BOARD_USER_LED_GPIO, 1u << BOARD_USER_LED_GPIO_PIN);
+    GPIO1->DR = BOARD_USER_SER_DEBUG_GPIO_MASK;
 
-	intial_millis = SysTick->VAL;
-
-    /* clear the interrupt status */
+    GPT2->SR = GPT_OC3_FLAG;  // limpa flag diretamente
     g_InputSignal = true;
 
-	DWT->CYCCNT = 0;
-    SDK_ISR_EXIT_BARRIER;
-    cycleCnt= DWT->CYCCNT;
+
 
 }
 /* TODO: insert other definitions and declarations here. */
