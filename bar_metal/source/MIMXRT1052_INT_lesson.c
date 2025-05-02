@@ -30,31 +30,56 @@ uint32_t cycleCnt=0;
 
 #define BOARD_USER_LED_GPIO_PIN_MASK 1u << BOARD_USER_LED_GPIO_PIN
 
+#define GPT_OC3_FLAG (1U << 2)
 
-/* GPT2_IRQn interrupt handler */
-void GPT2_IRQHandler(void) {
-  /*  Place your code here */
+///* GPT2_IRQn interrupt handler */
+//void GPT2_IRQHandler(void) {
+//  /*  Place your code here */
+//
+//    //cycleCnt= DWT->CYCCNT;
+//
+//    //uint32_t status = GPT_GetStatusFlags(GPT2,kGPT_OutputCompare3Flag);
+//
+//    //if (status & kGPT_OutputCompare3Flag)
+//    if (GPT_GetStatusFlags(GPT2,kGPT_OutputCompare3Flag))
+//
+//    {
+//        GPIO_PortToggle(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_MASK);
+//        GPT_ClearStatusFlags(GPT2, kGPT_OutputCompare3Flag); // clean gpt interrupt flag
+//
+//    }else{
+//        GPT_ClearStatusFlags(GPT2, kGPT_OutputCompare1Flag); // clean gpt interrupt flag
+//    }
+//
+//
+//
+//  //  g_InputSignal = true;
+//
+//  //  DWT->CYCCNT = 0;
+//
+//  /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F
+//     Store immediate overlapping exception return operation might vector to incorrect interrupt. */
+//  #if defined __CORTEX_M && (__CORTEX_M == 4U)
+//    __DSB();
+//  #endif
+//}
 
-    cycleCnt= DWT->CYCCNT;
 
-    uint32_t status = GPT_GetStatusFlags(GPT2,kGPT_OutputCompare3Flag);
+void GPT2_IRQHandler(void)
+{
 
-    if (status & kGPT_OutputCompare3Flag)
+    if (GPT2->SR & GPT_OC3_FLAG)
     {
-        GPIO_PortToggle(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_MASK);
+        //GPIO1->DR_TOGGLE = (BOARD_USER_SER_DEBUG_GPIO_MASK);  // acesso direto, sem HAL
+        GPIO1->DR = BOARD_USER_SER_DEBUG_GPIO_MASK;
+
+        GPT2->SR = GPT_OC3_FLAG;  // limpa flag diretamente
+        g_InputSignal = true;
+
     }
-    GPT_ClearStatusFlags(GPT2, kGPT_OutputCompare3Flag); // clean gpt interrupt flag
-    g_InputSignal = true;
 
-    DWT->CYCCNT = 0;
-
-  /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F
-     Store immediate overlapping exception return operation might vector to incorrect interrupt. */
-  #if defined __CORTEX_M && (__CORTEX_M == 4U)
     __DSB();
-  #endif
 }
-
 //void GPT2_Callback(void *param)
 //{
 //    GPIO_PortToggle(BOARD_USER_LED_GPIO, 1u << BOARD_USER_LED_GPIO_PIN);

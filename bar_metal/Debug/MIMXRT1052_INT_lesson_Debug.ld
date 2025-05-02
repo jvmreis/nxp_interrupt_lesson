@@ -6,7 +6,7 @@
  * Generated linker script file for MIMXRT1052xxxxB
  * Created from linkscript.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.30
- * MCUXpresso IDE v24.12 [Build 148] [2025-01-10] on Apr 23, 2025, 1:29:00 PM
+ * MCUXpresso IDE v24.12 [Build 148] [2025-01-10] on May 2, 2025, 1:51:12 PM
  */
 
 INCLUDE "MIMXRT1052_INT_lesson_Debug_library.ld"
