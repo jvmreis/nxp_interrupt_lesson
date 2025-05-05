@@ -184,7 +184,7 @@ instance:
       - clockSourceFreq: 'ClocksTool_DefaultInit'
       - oscDivider: '1'
       - divider: '1'
-      - enableFreeRun: 'false'
+      - enableFreeRun: 'true'
       - enableRunInWait: 'true'
       - enableRunInStop: 'true'
       - enableRunInDoze: 'false'
@@ -197,11 +197,6 @@ instance:
         - channel: 'kGPT_OutputCompare_Channel3'
         - mode: 'kGPT_OutputOperation_Toggle'
         - compare_value_str: '7500000'
-      - 1:
-        - channelName: ''
-        - channel: 'kGPT_OutputCompare_Channel1'
-        - mode: 'kGPT_OutputOperation_Disconnected'
-        - compare_value_str: '75000000'
     - interrupt_requests: 'kGPT_OutputCompare3InterruptEnable'
     - isInterruptEnabled: 'true'
     - interrupt:
@@ -216,7 +211,7 @@ instance:
 const gpt_config_t GPT2_config = {
   .clockSource = kGPT_ClockSource_Periph,
   .divider = 1UL,
-  .enableFreeRun = false,
+  .enableFreeRun = true,
   .enableRunInWait = true,
   .enableRunInStop = true,
   .enableRunInDoze = false,
@@ -230,8 +225,6 @@ static void GPT2_init(void) {
   GPT_SetOscClockDivider(GPT2_PERIPHERAL, 1);
   GPT_SetOutputCompareValue(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel3, 7500000);
   GPT_SetOutputOperationMode(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel3, kGPT_OutputOperation_Toggle);
-  GPT_SetOutputCompareValue(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel1, 75000000);
-  GPT_SetOutputOperationMode(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel1, kGPT_OutputOperation_Disconnected);
   /* Enable GPT interrupt sources */
   GPT_EnableInterrupts(GPT2_PERIPHERAL, kGPT_OutputCompare3InterruptEnable);
   /* Enable interrupt GPT2_GPT_IRQN request in the NVIC */
