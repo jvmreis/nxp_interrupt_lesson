@@ -1386,9 +1386,9 @@
                <config_set_global name="global_messages"/>
             </component>
             <component name="gpio_adapter_common" uuid="b7892dcd-888c-407d-8e50-7e18255df9b6" type_id="gpio_adapter_common">
-               <config_set_global name="global_gpio_adapter_common" quick_selection="default">
+               <config_set_global name="global_gpio_adapter_common">
                   <struct name="commonSetting">
-                     <setting name="HAL_GPIO_ISR_PRIORITY" value="3"/>
+                     <setting name="HAL_GPIO_ISR_PRIORITY" value="0"/>
                      <setting name="HAL_GpioPreInit" value="true"/>
                   </struct>
                </config_set_global>

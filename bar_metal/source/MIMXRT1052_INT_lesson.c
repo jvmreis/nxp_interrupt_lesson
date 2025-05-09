@@ -7,157 +7,118 @@
 
 /**
  * @file    MIMXRT1052_INT_lesson.c
- * @brief   Application entry point.
+ * @brief   Application entry point for demonstrating GPIO and GPT interrupt handling on RT1052.
  */
+
 #include <stdio.h>
-#include "board.h"
-#include "peripherals.h"
-#include "pin_mux.h"
-#include "clock_config.h"
-#include "fsl_debug_console.h"
-#include "fsl_adapter_gpio.h"
+#include "board.h"                  // Board initialization utilities
+#include "peripherals.h"           // Peripheral configuration (GPT, GPIO, etc.)
+#include "pin_mux.h"               // Pin multiplexing setup
+#include "clock_config.h"          // System clock initialization
+#include "fsl_debug_console.h"     // Debug console for printf/logging
+#include "fsl_adapter_gpio.h"      // HAL GPIO abstraction
+#include "fsl_adapter_timer.h"     // HAL Timer abstraction
 
-#include "fsl_adapter_timer.h"
-
-/* TODO: insert other include files here. */
+// Global flag used to indicate input signal (not actively used here)
 volatile bool g_InputSignal = false;
-uint32_t intial_millis=0;
-uint32_t cycleCnt=0;
+
+// Variables for debugging/measurement (not used in current logic)
+uint32_t intial_millis = 0;
+uint32_t cycleCnt = 0;
+
+// Define GPIO pins and bitmasks
 #define BOARD_USER_DEBUG_GPIO GPIO1
 #define BOARD_USER_SER_DEBUG_GPIO_PIN 19U
+#define BOARD_USER_SER_DEBUG_GPIO_MASK (1u << BOARD_USER_SER_DEBUG_GPIO_PIN)
 
-#define BOARD_USER_SER_DEBUG_GPIO_MASK 1u << BOARD_USER_SER_DEBUG_GPIO_PIN
+#define BOARD_USER_LED_GPIO_PIN_MASK (1u << BOARD_USER_LED_GPIO_PIN)
+#define BOARD_USER_BUTTON_GPIO_PIN_MASK (1U << BOARD_USER_BUTTON_GPIO_PIN)
 
-#define BOARD_USER_LED_GPIO_PIN_MASK 1u << BOARD_USER_LED_GPIO_PIN
-
+// GPT output compare channel 3 interrupt flag
 #define GPT_OC3_FLAG (1U << 2)
 
-///* GPT2_IRQn interrupt handler */
-//void GPT2_IRQHandler(void) {
-//  /*  Place your code here */
-//
-//    //cycleCnt= DWT->CYCCNT;
-//
-//    //uint32_t status = GPT_GetStatusFlags(GPT2,kGPT_OutputCompare3Flag);
-//
-//    //if (status & kGPT_OutputCompare3Flag)
-//    if (GPT_GetStatusFlags(GPT2,kGPT_OutputCompare3Flag))
-//
-//    {
-//        GPIO_PortToggle(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_MASK);
-//        GPT_ClearStatusFlags(GPT2, kGPT_OutputCompare3Flag); // clean gpt interrupt flag
-//
-//    }else{
-//        GPT_ClearStatusFlags(GPT2, kGPT_OutputCompare1Flag); // clean gpt interrupt flag
-//    }
-//
-//
-//
-//  //  g_InputSignal = true;
-//
-//  //  DWT->CYCCNT = 0;
-//
-//  /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F
-//     Store immediate overlapping exception return operation might vector to incorrect interrupt. */
-//  #if defined __CORTEX_M && (__CORTEX_M == 4U)
-//    __DSB();
-//  #endif
-//}
-
-
+/*!
+ * @brief GPT2 IRQ handler
+ * This is triggered when GPT2 Output Compare channel 3 matches.
+ */
 void GPT2_IRQHandler(void)
 {
+    // Generate a short pulse for oscilloscope debug by writing to GPIO directly
+    GPIO1->DR = BOARD_USER_SER_DEBUG_GPIO_MASK;
+    GPIO1->DR = 0;
 
-    //if (GPT2->SR & GPT_OC3_FLAG)
-    //{
-        //GPIO1->DR_TOGGLE = (BOARD_USER_SER_DEBUG_GPIO_MASK);  // acesso direto, sem HAL
-        GPIO1->DR = BOARD_USER_SER_DEBUG_GPIO_MASK;
+    // Clear the GPT2 Output Compare Channel 3 interrupt flag
+    GPT2->SR = GPT_OC3_FLAG;
 
-        GPT2->SR = GPT_OC3_FLAG;  // limpa flag diretamente
-        g_InputSignal = true;
+    //g_InputSignal = true;
 
-    //}
-
+    // Ensure memory operations complete before leaving the ISR
     __DSB();
 }
-//void GPT2_Callback(void *param)
-//{
-//    GPIO_PortToggle(BOARD_USER_LED_GPIO, 1u << BOARD_USER_LED_GPIO_PIN);
-//
-//    // Seu código de callback aqui
-//}
-//TIMER_HANDLE_DEFINE(gptTimerHandle);
 
 /*!
- * @brief Interrupt service fuction of switch.
+ * @brief GPIO external interrupt handler (hardware interrupt from a button).
+ * Only used when ISR_GPIO_HAL_COMPARATION == 0.
+ */
+#if (ISR_GPIO_HAL_COMPARATION == 0U)
+void GPIO5_Combined_0_15_IRQHandler(void)
+{
+    // Generate a short debug pulse on GPIO
+    GPIO1->DR = BOARD_USER_SER_DEBUG_GPIO_MASK;
+    GPIO1->DR = 0;
+
+    // Clear GPIO interrupt flag for the user button pin
+    GPIO_PortClearInterruptFlags(BOARD_USER_BUTTON_GPIO, BOARD_USER_BUTTON_GPIO_PIN_MASK);
+
+    //g_InputSignal = true;
+
+    __DSB(); // Ensure memory sync
+}
+#endif
+
+/*!
+ * @brief Software callback for the button using HAL interrupt service.
+ * Only used when ISR_GPIO_HAL_COMPARATION > 0.
  */
 void BOARD_INITPINS_USER_BUTTON_callback(void *param)
 {
-
-//	GPIO_PinWrite(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_PIN,1);
-////  GPIO_PortToggle(BOARD_USER_DEBUG_GPIO, 1u << BOARD_USER_SER_DEBUG_GPIO_PIN);
-////	GPIO_PinWrite(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_PIN,0);
-//
-//    GPIO_PortToggle(BOARD_USER_LED_GPIO, 1u << BOARD_USER_LED_GPIO_PIN);
-//
-//	intial_millis = SysTick->VAL;
-//
-//    /* clear the interrupt status */
-//    g_InputSignal = true;
-//
-//	DWT->CYCCNT = 0;
-//    SDK_ISR_EXIT_BARRIER;
-//    cycleCnt= DWT->CYCCNT;
-
+#if (ISR_GPIO_HAL_COMPARATION > 0U)
+    // Generate pulse on debug GPIO
     GPIO1->DR = BOARD_USER_SER_DEBUG_GPIO_MASK;
-
-    GPT2->SR = GPT_OC3_FLAG;  // limpa flag diretamente
-    g_InputSignal = true;
-
-
-
+    GPIO1->DR = 0;
+#endif
 }
-/* TODO: insert other definitions and declarations here. */
 
-/*
- * @brief   Application entry point.
+/*!
+ * @brief Main application entry point
  */
 int main(void)
 {
-
-    /* Init board hardware. */
-    BOARD_ConfigMPU();
-    BOARD_InitBootPins();
-    BOARD_InitBootClocks();
-    BOARD_InitBootPeripherals();
+    // Initialize core peripherals and board
+    BOARD_ConfigMPU();                 // Configure Memory Protection Unit
+    BOARD_InitBootPins();             // Initialize pins defined in MCUXpresso Config Tools
+    BOARD_InitBootClocks();           // Setup clock tree
+    BOARD_InitBootPeripherals();      // Setup GPT, GPIO, etc.
 #ifndef BOARD_INIT_DEBUG_CONSOLE_PERIPHERAL
-    /* Init FSL debug console. */
-    BOARD_InitDebugConsole();
+    BOARD_InitDebugConsole();         // Init UART debug console for printf
 #endif
 
     PRINTF("Hello World\r\n");
 
-//    // Configuração do Timer HAL (GPT2 para 1 Hz)
-//    hal_timer_config_t timerConfig;
-//    timerConfig.timeout = 1000000U;       // 1000000 us = 1 s intervalo
-//    timerConfig.srcClock_Hz = 75000000U;  // clock do GPT2 em Hz (75 MHz)
-//    timerConfig.instance = 2;             // utilizar GPT2 (instância 2)
-//    HAL_TimerInit((hal_timer_handle_t)gptTimerHandle, &timerConfig);
-//
-//    // Registra callback e inicia o timer
-//    HAL_TimerInstallCallback((hal_timer_handle_t)gptTimerHandle, GPT2_Callback, NULL);
-//    HAL_TimerEnable((hal_timer_handle_t)gptTimerHandle);
-
+    // Main loop
     while (1)
     {
+        // If an input signal is detected (not used actively in this example)
         if (g_InputSignal)
         {
-        	intial_millis = intial_millis - (SysTick->VAL);
-            PRINTF("Interruption working %d:%d\r\n",cycleCnt,intial_millis);
-        	GPIO_PinWrite(BOARD_USER_DEBUG_GPIO, BOARD_USER_SER_DEBUG_GPIO_PIN,0);
+            // Debug example (SysTick usage not fully configured)
+            intial_millis = intial_millis - (SysTick->VAL);
+            PRINTF("Interruption working %d:%d\r\n", cycleCnt, intial_millis);
+
+            // Toggle LED to indicate activity
+            GPIO_PortToggle(BOARD_USER_LED_GPIO, BOARD_USER_LED_GPIO_PIN_MASK);
 
             g_InputSignal = false;
         }
     }
 }
-

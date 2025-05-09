@@ -43,9 +43,8 @@ component:
 - type_id: 'gpio_adapter_common'
 - global_gpio_adapter_common:
   - commonSetting:
-    - HAL_GPIO_ISR_PRIORITY: '3'
+    - HAL_GPIO_ISR_PRIORITY: '0'
     - HAL_GpioPreInit: 'true'
-  - quick_selection: 'default'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 

@@ -26,6 +26,9 @@
 #define FSL_GPIO_ADAPTER_VERSION (MAKE_VERSION(1, 0, 1)) /*!< Version 1.0.1. */
 /*! @} */
 
+#define ISR_GPIO_HAL_COMPARATION 1
+
+
 /*! @brief Definition of GPIO conflict check Enable. */
 #ifndef HAL_GPIO_CONFLICT_CHECK_ENABLE
 #define HAL_GPIO_CONFLICT_CHECK_ENABLE (1)

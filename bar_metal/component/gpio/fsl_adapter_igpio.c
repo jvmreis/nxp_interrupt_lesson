@@ -148,7 +148,7 @@ void GPIO4_Combined_16_31_IRQHandler(void)
 }
 #endif
 /* IRQHandler for GPIO5 */
-#if defined(GPIO5) && (FSL_FEATURE_SOC_IGPIO_COUNT > 0U)
+#if defined(GPIO5) && (FSL_FEATURE_SOC_IGPIO_COUNT > 0U) && ISR_GPIO_HAL_COMPARATION
 void GPIO5_Combined_0_15_IRQHandler(void);
 void GPIO5_Combined_0_15_IRQHandler(void)
 {
