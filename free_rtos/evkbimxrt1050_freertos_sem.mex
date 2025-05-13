@@ -108,15 +108,21 @@
                      <pin_features>
                         <pin_feature name="direction" value="INPUT"/>
                         <pin_feature name="gpio_interrupt" value="kGPIO_IntFallingEdge"/>
+                        <pin_feature name="slew_rate" value="Fast"/>
                      </pin_features>
                   </pin>
                   <pin peripheral="GPIO1" signal="gpio_io, 19" pin_num="M12" pin_signal="GPIO_AD_B1_03">
                      <pin_features>
                         <pin_feature name="identifier" value="GPIO_debug"/>
                         <pin_feature name="direction" value="OUTPUT"/>
+                        <pin_feature name="slew_rate" value="Fast"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="GPT2" signal="gpt_compare, 3" pin_num="F13" pin_signal="GPIO_AD_B0_08"/>
+                  <pin peripheral="GPT2" signal="gpt_compare, 3" pin_num="F13" pin_signal="GPIO_AD_B0_08">
+                     <pin_features>
+                        <pin_feature name="slew_rate" value="Fast"/>
+                     </pin_features>
+                  </pin>
                </pins>
             </function>
          </functions_list>
@@ -645,7 +651,7 @@
                               <setting name="pin_selection" value="gpio_io.00"/>
                               <setting name="userPinId" value=""/>
                               <setting name="funtionalGroupEnum" value="BOARD_InitPins"/>
-                              <setting name="setCallbackFnc" value="true"/>
+                              <setting name="setCallbackFnc" value="false"/>
                               <struct name="callbackFncCfg">
                                  <setting name="functionName" value="defaultFunctionName"/>
                                  <setting name="userData" value=""/>
@@ -663,7 +669,7 @@
                            <setting name="clockSourceFreq" value="ClocksTool_DefaultInit"/>
                            <setting name="oscDivider" value="1"/>
                            <setting name="divider" value="1"/>
-                           <setting name="enableFreeRun" value="false"/>
+                           <setting name="enableFreeRun" value="true"/>
                            <setting name="enableRunInWait" value="true"/>
                            <setting name="enableRunInStop" value="true"/>
                            <setting name="enableRunInDoze" value="false"/>
@@ -673,12 +679,6 @@
                         <array name="input_capture_channels"/>
                         <array name="output_compare_channels">
                            <struct name="0">
-                              <setting name="channelName" value=""/>
-                              <setting name="channel" value="kGPT_OutputCompare_Channel1"/>
-                              <setting name="mode" value="kGPT_OutputOperation_Disconnected"/>
-                              <setting name="compare_value_str" value="75000000"/>
-                           </struct>
-                           <struct name="1">
                               <setting name="channelName" value=""/>
                               <setting name="channel" value="kGPT_OutputCompare_Channel3"/>
                               <setting name="mode" value="kGPT_OutputOperation_Toggle"/>
@@ -695,7 +695,7 @@
                            <setting name="IRQn" value="GPT2_IRQn"/>
                            <setting name="enable_interrrupt" value="enabled"/>
                            <setting name="enable_priority" value="true"/>
-                           <setting name="priority" value="2"/>
+                           <setting name="priority" value="0"/>
                            <setting name="enable_custom_name" value="false"/>
                         </struct>
                         <setting name="EnableTimerInInit" value="true"/>

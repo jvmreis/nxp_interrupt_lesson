@@ -43,7 +43,7 @@ extern "C" {
 /* GPT2 interrupt vector ID (number). */
 #define GPT2_GPT_IRQN GPT2_IRQn
 /* GPT2 interrupt vector priority. */
-#define GPT2_GPT_IRQ_PRIORITY 2
+#define GPT2_GPT_IRQ_PRIORITY 0
 /* GPT2 interrupt handler identifier. */
 #define GPT2_GPT_IRQHANDLER GPT2_IRQHandler
 
@@ -58,12 +58,6 @@ extern const gpt_config_t GPT2_config;
  **********************************************************************************************************************/
 /* Get GPIO pin configuration */
 hal_gpio_pin_config_t createAdapterGpioPinConfig(GPIO_Type *port, uint8_t pin, hal_gpio_direction_t direction, uint8_t level);
-
-/***********************************************************************************************************************
- * Callback functions
- **********************************************************************************************************************/
-/* Callback function for the BOARD_INITPINS_USER_BUTTON_handle*/
-extern void BOARD_INITPINS_USER_BUTTON_callback(void *param);
 
 /***********************************************************************************************************************
  * Initialization functions

@@ -116,7 +116,7 @@ instance:
         - pin_selection: 'gpio_io.00'
         - userPinId: ''
         - funtionalGroupEnum: 'BOARD_InitPins'
-        - setCallbackFnc: 'true'
+        - setCallbackFnc: 'false'
         - callbackFncCfg:
           - functionName: 'defaultFunctionName'
           - userData: ''
@@ -158,8 +158,6 @@ static void GPIO5_init(void) {
   gpioPinConfig = createAdapterGpioPinConfig(BOARD_INITPINS_USER_BUTTON_PORT, BOARD_INITPINS_USER_BUTTON_PIN, BOARD_INITPINS_USER_BUTTON_PIN_DIRECTION, BOARD_INITPINS_USER_BUTTON_PIN_LEVEL);
   status = HAL_GpioInit(BOARD_INITPINS_USER_BUTTON_handle, &gpioPinConfig);
   assert(status == kStatus_HAL_GpioSuccess);
-  status = HAL_GpioInstallCallback(BOARD_INITPINS_USER_BUTTON_handle, BOARD_INITPINS_USER_BUTTON_callback, NULL);
-  assert(status == kStatus_HAL_GpioSuccess);
   status = HAL_GpioSetTriggerMode(BOARD_INITPINS_USER_BUTTON_handle, BOARD_INITPINS_USER_BUTTON_TRIGGER_MODE);
   assert(status == kStatus_HAL_GpioSuccess);
 }
@@ -184,7 +182,7 @@ instance:
       - clockSourceFreq: 'ClocksTool_DefaultInit'
       - oscDivider: '1'
       - divider: '1'
-      - enableFreeRun: 'false'
+      - enableFreeRun: 'true'
       - enableRunInWait: 'true'
       - enableRunInStop: 'true'
       - enableRunInDoze: 'false'
@@ -193,11 +191,6 @@ instance:
     - input_capture_channels: []
     - output_compare_channels:
       - 0:
-        - channelName: ''
-        - channel: 'kGPT_OutputCompare_Channel1'
-        - mode: 'kGPT_OutputOperation_Disconnected'
-        - compare_value_str: '75000000'
-      - 1:
         - channelName: ''
         - channel: 'kGPT_OutputCompare_Channel3'
         - mode: 'kGPT_OutputOperation_Toggle'
@@ -208,7 +201,7 @@ instance:
       - IRQn: 'GPT2_IRQn'
       - enable_interrrupt: 'enabled'
       - enable_priority: 'true'
-      - priority: '2'
+      - priority: '0'
       - enable_custom_name: 'false'
     - EnableTimerInInit: 'true'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
@@ -216,7 +209,7 @@ instance:
 const gpt_config_t GPT2_config = {
   .clockSource = kGPT_ClockSource_Periph,
   .divider = 1UL,
-  .enableFreeRun = false,
+  .enableFreeRun = true,
   .enableRunInWait = true,
   .enableRunInStop = true,
   .enableRunInDoze = false,
@@ -228,8 +221,6 @@ static void GPT2_init(void) {
   /* GPT device and channels initialization */
   GPT_Init(GPT2_PERIPHERAL, &GPT2_config);
   GPT_SetOscClockDivider(GPT2_PERIPHERAL, 1);
-  GPT_SetOutputCompareValue(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel1, 75000000);
-  GPT_SetOutputOperationMode(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel1, kGPT_OutputOperation_Disconnected);
   GPT_SetOutputCompareValue(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel3, 1);
   GPT_SetOutputOperationMode(GPT2_PERIPHERAL, kGPT_OutputCompare_Channel3, kGPT_OutputOperation_Toggle);
   /* Enable GPT interrupt sources */

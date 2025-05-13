@@ -45,9 +45,9 @@ BOARD_InitPins:
   - {pin_num: K14, peripheral: LPUART1, signal: TX, pin_signal: GPIO_AD_B0_12, software_input_on: Disable, hysteresis_enable: Disable, pull_up_down_config: Pull_Down_100K_Ohm,
     pull_keeper_select: Keeper, pull_keeper_enable: Enable, open_drain: Disable, speed: MHZ_100, drive_strength: R0_6, slew_rate: Slow}
   - {pin_num: F14, peripheral: GPIO1, signal: 'gpio_io, 09', pin_signal: GPIO_AD_B0_09, direction: OUTPUT}
-  - {pin_num: L6, peripheral: GPIO5, signal: 'gpio_io, 00', pin_signal: WAKEUP, direction: INPUT, gpio_interrupt: kGPIO_IntFallingEdge}
-  - {pin_num: M12, peripheral: GPIO1, signal: 'gpio_io, 19', pin_signal: GPIO_AD_B1_03, identifier: GPIO_debug, direction: OUTPUT}
-  - {pin_num: F13, peripheral: GPT2, signal: 'gpt_compare, 3', pin_signal: GPIO_AD_B0_08}
+  - {pin_num: L6, peripheral: GPIO5, signal: 'gpio_io, 00', pin_signal: WAKEUP, direction: INPUT, gpio_interrupt: kGPIO_IntFallingEdge, slew_rate: Fast}
+  - {pin_num: M12, peripheral: GPIO1, signal: 'gpio_io, 19', pin_signal: GPIO_AD_B1_03, identifier: GPIO_debug, direction: OUTPUT, slew_rate: Fast}
+  - {pin_num: F13, peripheral: GPT2, signal: 'gpt_compare, 3', pin_signal: GPIO_AD_B0_08, slew_rate: Fast}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 
@@ -104,6 +104,7 @@ void BOARD_InitPins(void) {
 #endif
   IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_03_GPIO1_IO19, 0U); 
   IOMUXC_SetPinMux(IOMUXC_SNVS_WAKEUP_GPIO5_IO00, 0U); 
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B0_08_GPT2_COMPARE3, 0xB0A1U); 
 #if FSL_IOMUXC_DRIVER_VERSION >= MAKE_VERSION(2, 0, 3)
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B0_12_LPUART1_TXD, 0x10B0U); 
 #else
@@ -114,6 +115,8 @@ void BOARD_InitPins(void) {
 #else
   IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B0_13_LPUART1_RX, 0x10B0U); 
 #endif
+  IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_03_GPIO1_IO19, 0x10B1U); 
+  IOMUXC_SetPinConfig(IOMUXC_SNVS_WAKEUP_GPIO5_IO00, 0x01B0A1U); 
 }
 /***********************************************************************************************************************
  * EOF
