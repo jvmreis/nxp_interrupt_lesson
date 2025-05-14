@@ -52,10 +52,9 @@ In MCUXpresso:
 ## 📖 Documentation
 
 A full technical lab report is available in PDF and Markdown formats, including:
-- Diagrams
-- Scope screenshots
-- Cycle calculations
-- Setup instructions
+- **[Laboratory guide ](https://github.com/jvmreis/nxp_interrupt_lesson/blob/main/documents/Technical%20Laboratory%20Interrupt%20Latency.pdf)**
+- **[Schematic diagrams ](https://github.com/jvmreis/nxp_interrupt_lesson/blob/main/documents/imxrt1050evkb_schematic.pdf)**
+- **[Timing analysis ](https://github.com/jvmreis/nxp_interrupt_lesson/tree/main/documents/images)**
 - **[nxp AN1278 application note](https://www.nxp.com/docs/en/application-note/AN12078.pdf)**
 ---
 
