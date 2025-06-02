@@ -56,11 +56,6 @@
                         <data>true</data>
                      </feature>
                   </dependency>
-                  <dependency resourceType="Peripheral" resourceId="LPI2C3" description="Peripheral LPI2C3 signals are routed in the Pins Tool, but the peripheral is not initialized in the Peripherals Tool." problem_level="1" source="Pins:BOARD_InitPins">
-                     <feature name="initialized" evaluation="equal">
-                        <data>true</data>
-                     </feature>
-                  </dependency>
                   <dependency resourceType="SWComponent" resourceId="platform.drivers.common" description="Pins initialization requires the COMMON Driver in the project." problem_level="2" source="Pins:BOARD_InitPins">
                      <feature name="enabled" evaluation="equal" configuration="core0">
                         <data>true</data>
@@ -128,8 +123,6 @@
                         <pin_feature name="slew_rate" value="Fast"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="LPI2C3" signal="SCL" pin_num="K10" pin_signal="GPIO_AD_B1_07"/>
-                  <pin peripheral="LPI2C3" signal="SDA" pin_num="J12" pin_signal="GPIO_AD_B1_06"/>
                </pins>
             </function>
          </functions_list>
@@ -579,16 +572,6 @@
                   <data type="Version">2.0.0</data>
                </feature>
             </dependency>
-            <dependency resourceType="SWComponent" resourceId="platform.drivers.lpi2c" description="LPI2C Driver is not found in the toolchain/IDE project. The project will not compile!" problem_level="2" source="Peripherals">
-               <feature name="enabled" evaluation="equal">
-                  <data type="Boolean">true</data>
-               </feature>
-            </dependency>
-            <dependency resourceType="SWComponent" resourceId="platform.drivers.lpi2c" description="An unsupported version of the LPI2C Driver in the toolchain/IDE project. Required: ${required_value}, actual: ${actual_value}. The project might not compile correctly." problem_level="1" source="Peripherals">
-               <feature name="version" evaluation="greaterOrEqual">
-                  <data type="Version" maxValue="2.5.9">2.2.0</data>
-               </feature>
-            </dependency>
             <dependency resourceType="Tool" resourceId="Pins" description="The Pins tool is required by the Peripherals tool, but it is disabled." problem_level="2" source="Peripherals">
                <feature name="enabled" evaluation="equal">
                   <data>true</data>
@@ -624,21 +607,6 @@
                   </dependency>
                   <dependency resourceType="PeripheralUnifiedSignal" resourceId="GPT2.gpt_compare.3" description="Signal COMPARE, 3 is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
                      <feature name="routed" evaluation="equal">
-                        <data type="Boolean">true</data>
-                     </feature>
-                  </dependency>
-                  <dependency resourceType="ClockOutput" resourceId="LPI2C_CLK_ROOT" description="LPI2C_CLK_ROOT is inactive." problem_level="2" source="Peripherals:BOARD_InitPeripherals">
-                     <feature name="frequency" evaluation="greaterThan">
-                        <data type="Frequency" unit="Hz">0</data>
-                     </feature>
-                  </dependency>
-                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="LPI2C3.lpi2c_scl" description="Signal serial clock is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
-                     <feature name="routed" evaluation="">
-                        <data type="Boolean">true</data>
-                     </feature>
-                  </dependency>
-                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="LPI2C3.lpi2c_sda" description="Signal serial data is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
-                     <feature name="routed" evaluation="">
                         <data type="Boolean">true</data>
                      </feature>
                   </dependency>
@@ -731,54 +699,6 @@
                            <setting name="enable_custom_name" value="false"/>
                         </struct>
                         <setting name="EnableTimerInInit" value="true"/>
-                     </config_set>
-                  </instance>
-                  <instance name="LPI2C3" uuid="9dab16f8-a01f-4708-adc9-a21ed442517a" type="lpi2c" type_id="lpi2c_2.2.0" mode="master" peripheral="LPI2C3" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
-                     <config_set name="main">
-                        <setting name="clockSource" value="Lpi2cClock"/>
-                        <setting name="clockSourceFreq" value="ClocksTool_DefaultInit"/>
-                     </config_set>
-                     <config_set name="interrupt_vector"/>
-                     <config_set name="master" quick_selection="qs_master_transfer">
-                        <setting name="mode" value="transfer"/>
-                        <struct name="config">
-                           <setting name="enableMaster" value="true"/>
-                           <setting name="enableDoze" value="true"/>
-                           <setting name="debugEnable" value="false"/>
-                           <setting name="ignoreAck" value="false"/>
-                           <setting name="pinConfig" value="kLPI2C_2PinOpenDrain"/>
-                           <setting name="baudRate_Hz" value="100000"/>
-                           <setting name="busIdleTimeout_ns" value="0"/>
-                           <setting name="pinLowTimeout_ns" value="0"/>
-                           <setting name="sdaGlitchFilterWidth_ns" value="0"/>
-                           <setting name="sclGlitchFilterWidth_ns" value="0"/>
-                           <struct name="hostRequest">
-                              <setting name="enable" value="false"/>
-                              <setting name="source" value="kLPI2C_HostRequestExternalPin"/>
-                              <setting name="polarity" value="kLPI2C_HostRequestPinActiveHigh"/>
-                           </struct>
-                           <set name="edmaRequestSources">
-                              <selected/>
-                           </set>
-                        </struct>
-                        <struct name="transfer">
-                           <setting name="blocking" value="false"/>
-                           <setting name="enable_custom_handle" value="false"/>
-                           <struct name="callback">
-                              <setting name="name" value=""/>
-                              <setting name="userData" value=""/>
-                           </struct>
-                           <set name="flags">
-                              <selected/>
-                           </set>
-                           <setting name="slaveAddress" value="0"/>
-                           <setting name="direction" value="kLPI2C_Write"/>
-                           <setting name="subaddress" value="0"/>
-                           <setting name="subaddressSize" value="1"/>
-                           <setting name="blocking_buffer" value="false"/>
-                           <setting name="enable_custom_buffer" value="false"/>
-                           <setting name="dataSize" value="1"/>
-                        </struct>
                      </config_set>
                   </instance>
                </instances>

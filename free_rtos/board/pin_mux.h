@@ -97,16 +97,6 @@ void BOARD_InitBootPins(void);
 #define BOARD_INITPINS_GPIO_int_timer_SIGNAL                         gpt_compare   /*!< Signal name */
 #define BOARD_INITPINS_GPIO_int_timer_CHANNEL                                 3U   /*!< Signal channel */
 
-/* GPIO_AD_B1_07 (coord K10), CSI_HSYNC/J35[16]/J22[1]/UART_RX */
-/* Routed pin properties */
-#define BOARD_INITPINS_CSI_HSYNC_PERIPHERAL                               LPI2C3   /*!< Peripheral name */
-#define BOARD_INITPINS_CSI_HSYNC_SIGNAL                                      SCL   /*!< Signal name */
-
-/* GPIO_AD_B1_06 (coord J12), CSI_VSYNC/J35[18]/J22[2]/UART_TX */
-/* Routed pin properties */
-#define BOARD_INITPINS_CSI_VSYNC_PERIPHERAL                               LPI2C3   /*!< Peripheral name */
-#define BOARD_INITPINS_CSI_VSYNC_SIGNAL                                      SDA   /*!< Signal name */
-
 
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
