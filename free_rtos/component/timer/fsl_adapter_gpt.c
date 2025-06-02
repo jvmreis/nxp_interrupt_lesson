@@ -61,12 +61,12 @@ void GPT1_IRQHandler(void)
     HAL_TimerInterruptHandle(1);
     SDK_ISR_EXIT_BARRIER;
 }
-//void GPT2_IRQHandler(void);
-//void GPT2_IRQHandler(void)
-//{
-//    HAL_TimerInterruptHandle(2);
-//    SDK_ISR_EXIT_BARRIER;
-//}
+void GPT2_IRQHandler(void);
+void GPT2_IRQHandler(void)
+{
+    HAL_TimerInterruptHandle(2);
+    SDK_ISR_EXIT_BARRIER;
+}
 /************************************************************************************
 *************************************************************************************
 * Public functions

@@ -14,6 +14,7 @@
 #include "pin_mux.h"
 #include "fsl_gpt.h"
 #include "fsl_clock.h"
+#include "fsl_lpi2c.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -46,12 +47,25 @@ extern "C" {
 #define GPT2_GPT_IRQ_PRIORITY 0
 /* GPT2 interrupt handler identifier. */
 #define GPT2_GPT_IRQHANDLER GPT2_IRQHandler
+/* BOARD_InitPeripherals defines for LPI2C3 */
+/* Definition of peripheral ID */
+#define LPI2C3_PERIPHERAL LPI2C3
+/* Definition of clock source */
+#define LPI2C3_CLOCK_FREQ 60000000UL
+/* Transfer buffer size */
+#define LPI2C3_MASTER_BUFFER_SIZE 1
+/* Definition of follower address */
+#define LPI2C3_MASTER_SLAVE_ADDRESS 0
 
 /***********************************************************************************************************************
  * Global variables
  **********************************************************************************************************************/
 extern GPIO_HANDLE_DEFINE(BOARD_INITPINS_USER_BUTTON_handle);
 extern const gpt_config_t GPT2_config;
+extern const lpi2c_master_config_t LPI2C3_masterConfig;
+extern lpi2c_master_transfer_t LPI2C3_masterTransfer;
+extern uint8_t LPI2C3_masterBuffer[LPI2C3_MASTER_BUFFER_SIZE];
+extern lpi2c_master_handle_t LPI2C3_masterHandle;
 
 /***********************************************************************************************************************
  * Global functions
